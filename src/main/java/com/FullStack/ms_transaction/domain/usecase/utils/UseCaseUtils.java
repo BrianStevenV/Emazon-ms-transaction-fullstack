@@ -7,11 +7,11 @@ import com.FullStack.ms_transaction.infrastructure.security.utils.IContextServic
 import java.time.LocalDateTime;
 
 
-public class SuppliesUseCaseUtils {
+public class UseCaseUtils {
 
     private final IContextService contextService;
 
-    public SuppliesUseCaseUtils(IContextService contextService) {
+    public UseCaseUtils(IContextService contextService) {
         this.contextService = contextService;
     }
 

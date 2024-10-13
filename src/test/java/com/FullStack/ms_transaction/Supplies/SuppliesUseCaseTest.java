@@ -8,7 +8,7 @@ import com.FullStack.ms_transaction.domain.model.Supplies;
 import com.FullStack.ms_transaction.domain.spi.ISuppliesPersistencePort;
 import com.FullStack.ms_transaction.domain.usecase.SuppliesUseCase;
 import com.FullStack.ms_transaction.domain.spi.IStockFeignClientPort;
-import com.FullStack.ms_transaction.domain.usecase.utils.SuppliesUseCaseUtils;
+import com.FullStack.ms_transaction.domain.usecase.utils.UseCaseUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,7 +38,7 @@ public class SuppliesUseCaseTest {
     private ISuppliesPersistencePort suppliesPersistencePort;
 
     @Mock
-    private SuppliesUseCaseUtils suppliesUseCaseUtils;
+    private UseCaseUtils useCaseUtils;
 
     private Supplies supplies;
     private QuantityStock quantityStock;
@@ -60,10 +60,10 @@ public class SuppliesUseCaseTest {
     @Test
     void addSupplies_updatesStockWhenAvailable() {
         // Crear un spy de SuppliesUseCase para controlar las llamadas a los métodos reales
-        SuppliesUseCase suppliesUseCaseSpy = spy(new SuppliesUseCase(suppliesPersistencePort, stockExternalPort, suppliesUseCaseUtils));
+        SuppliesUseCase suppliesUseCaseSpy = spy(new SuppliesUseCase(suppliesPersistencePort, stockExternalPort, useCaseUtils));
 
         // Simulamos obtener el ID del usuario
-        when(suppliesUseCaseUtils.getIdFromUserContextService()).thenReturn(123L);
+        when(useCaseUtils.getIdFromUserContextService()).thenReturn(123L);
 
         // Simulamos que el stock se actualiza correctamente
         doReturn(true).when(stockExternalPort).updateQuantity(any(QuantityStock.class));
@@ -84,7 +84,7 @@ public class SuppliesUseCaseTest {
 
     @Test
     void addSupplies_throwsExceptionWhenStockUpdateFails() {
-        when(suppliesUseCaseUtils.getIdFromUserContextService()).thenReturn(123L);
+        when(useCaseUtils.getIdFromUserContextService()).thenReturn(123L);
         when(stockExternalPort.updateQuantity(any(QuantityStock.class))).thenReturn(false);
 
         assertThrows(FeignClientStockException.class, () -> suppliesUseCase.addSupplies(supplies));
@@ -93,10 +93,10 @@ public class SuppliesUseCaseTest {
     @Test
     void addSupplies_savesSuppliesWhenStockUpdated() {
         // Crear un spy de SuppliesUseCase para controlar las llamadas a los métodos reales
-        SuppliesUseCase suppliesUseCaseSpy = spy(new SuppliesUseCase(suppliesPersistencePort, stockExternalPort, suppliesUseCaseUtils));
+        SuppliesUseCase suppliesUseCaseSpy = spy(new SuppliesUseCase(suppliesPersistencePort, stockExternalPort, useCaseUtils));
 
         // Simulamos obtener el ID del usuario
-        when(suppliesUseCaseUtils.getIdFromUserContextService()).thenReturn(123L);
+        when(useCaseUtils.getIdFromUserContextService()).thenReturn(123L);
 
         // Simulamos que el stock se actualiza correctamente
         doReturn(true).when(stockExternalPort).updateQuantity(any(QuantityStock.class));
@@ -119,10 +119,10 @@ public class SuppliesUseCaseTest {
         supplies.setIsAvailable(true); // Aseguramos que este campo sea verdadero para que llegue al punto de actualizar stock
 
         // Simulamos obtener el ID del usuario
-        when(suppliesUseCaseUtils.getIdFromUserContextService()).thenReturn(123L);
+        when(useCaseUtils.getIdFromUserContextService()).thenReturn(123L);
 
         // Crear un spy del suppliesUseCase
-        SuppliesUseCase suppliesUseCaseSpy = spy(new SuppliesUseCase(suppliesPersistencePort, stockExternalPort, suppliesUseCaseUtils));
+        SuppliesUseCase suppliesUseCaseSpy = spy(new SuppliesUseCase(suppliesPersistencePort, stockExternalPort, useCaseUtils));
 
         // Usamos doReturn para simular el método updateQuantity en el stockExternalPort
         doReturn(true).when(stockExternalPort).updateQuantity(any(QuantityStock.class));

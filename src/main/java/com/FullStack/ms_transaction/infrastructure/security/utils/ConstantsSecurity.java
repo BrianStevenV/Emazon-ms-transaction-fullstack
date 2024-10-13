@@ -11,6 +11,7 @@ public class ConstantsSecurity {
 
     // Supplies Controller
     public static final String SUPPLIES_CONTROLLER_POST_ADD_SUPPLIES = "/api/v1/supplies/";
+    public static final String SUPPLIES_CONTROLLER_GET_NEXT_DATE_SUPPLY = "/api/v1/supplies/next-date-supply/{productId}";
 
     //Swagger
 

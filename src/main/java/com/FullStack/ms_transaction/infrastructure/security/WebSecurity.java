@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.FullStack.ms_transaction.infrastructure.security.utils.ConstantsSecurity.CUSTOMER_ROLE;
+import static com.FullStack.ms_transaction.infrastructure.security.utils.ConstantsSecurity.SUPPLIES_CONTROLLER_GET_NEXT_DATE_SUPPLY;
 import static com.FullStack.ms_transaction.infrastructure.security.utils.ConstantsSecurity.SUPPLIES_CONTROLLER_POST_ADD_SUPPLIES;
 import static com.FullStack.ms_transaction.infrastructure.security.utils.ConstantsSecurity.SWAGGER_UI;
 import static com.FullStack.ms_transaction.infrastructure.security.utils.ConstantsSecurity.SWAGGER_UI_HTML;
@@ -43,8 +45,8 @@ public class WebSecurity {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(SWAGGER_UI_HTML, SWAGGER_UI, V3_API_DOCS).permitAll()
                         .requestMatchers(HttpMethod.POST, SUPPLIES_CONTROLLER_POST_ADD_SUPPLIES).hasAuthority(WAREHOUSE_ASSISTANT_ROLE)
+                        .requestMatchers(HttpMethod.GET, SUPPLIES_CONTROLLER_GET_NEXT_DATE_SUPPLY).hasAuthority(CUSTOMER_ROLE)
                         .anyRequest().authenticated()
-
                 )
                 .formLogin(formLogin -> formLogin.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

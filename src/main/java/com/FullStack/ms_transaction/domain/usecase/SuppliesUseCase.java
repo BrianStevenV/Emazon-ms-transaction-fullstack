@@ -2,34 +2,37 @@ package com.FullStack.ms_transaction.domain.usecase;
 
 import com.FullStack.ms_transaction.domain.api.ISuppliesServicePort;
 import com.FullStack.ms_transaction.domain.exception.FeignClientStockException;
+import com.FullStack.ms_transaction.domain.exception.ProductNotFoundException;
 import com.FullStack.ms_transaction.domain.exception.SaveSupplyException;
 import com.FullStack.ms_transaction.domain.exception.StatusIsNotApprovedException;
 import com.FullStack.ms_transaction.domain.model.EnumStatus;
 import com.FullStack.ms_transaction.domain.model.QuantityStock;
 import com.FullStack.ms_transaction.domain.model.Supplies;
 import com.FullStack.ms_transaction.domain.spi.ISuppliesPersistencePort;
-import com.FullStack.ms_transaction.domain.usecase.utils.SuppliesUseCaseUtils;
+import com.FullStack.ms_transaction.domain.usecase.utils.UseCaseUtils;
 import com.FullStack.ms_transaction.domain.spi.IStockFeignClientPort;
+
+import java.util.Date;
 
 public class SuppliesUseCase implements ISuppliesServicePort {
     private final ISuppliesPersistencePort suppliesPersistencePort;
     private final IStockFeignClientPort stockExternalPort;
-    private final SuppliesUseCaseUtils suppliesUseCaseUtils;
+    private final UseCaseUtils useCaseUtils;
 
-    public SuppliesUseCase(ISuppliesPersistencePort suppliesPersistencePort, IStockFeignClientPort stockExternalPort, SuppliesUseCaseUtils suppliesUseCaseUtils) {
+    public SuppliesUseCase(ISuppliesPersistencePort suppliesPersistencePort, IStockFeignClientPort stockExternalPort, UseCaseUtils useCaseUtils) {
         this.suppliesPersistencePort = suppliesPersistencePort;
         this.stockExternalPort = stockExternalPort;
-        this.suppliesUseCaseUtils = suppliesUseCaseUtils;
+        this.useCaseUtils = useCaseUtils;
     }
 
     @Override
     public void addSupplies(Supplies supplies) {
         setTimestamps(supplies);
         supplies.setStatus(EnumStatus.PENDING);
-        supplies.setUserId(suppliesUseCaseUtils.getIdFromUserContextService());
+        supplies.setUserId(useCaseUtils.getIdFromUserContextService());
 
         QuantityStock quantityStock = new QuantityStock(supplies.getProductId(),
-                suppliesUseCaseUtils.quantityTransactionToStock(supplies.getQuantityTotal(),
+                useCaseUtils.quantityTransactionToStock(supplies.getQuantityTotal(),
                         supplies.getQuantityAvailable()));
 
         if(supplies.getIsAvailable() == true) {
@@ -41,6 +44,15 @@ public class SuppliesUseCase implements ISuppliesServicePort {
 
     }
 
+    @Override
+    public Date getNextDateSupply(long productId) {
+        Date date = suppliesPersistencePort.findNextSupplyDateByProductId(productId);
+        if(date == null){
+            throw new ProductNotFoundException();
+        }
+        return date;
+    }
+
     private void  requiredStatusToSave(Supplies supplies, QuantityStock quantityStock) {
         if(supplies.getStatus().equals(EnumStatus.APPROVED)) {
             saveSuppliesOrRollback(supplies, quantityStock);
@@ -48,11 +60,12 @@ public class SuppliesUseCase implements ISuppliesServicePort {
             throw new StatusIsNotApprovedException();
         }
     }
+
     private void setTimestamps(Supplies supplies) {
         if (supplies.getCreatedAt() == null) {
-            suppliesUseCaseUtils.setCreationTimestamp(supplies);
+            useCaseUtils.setCreationTimestamp(supplies);
         }
-        suppliesUseCaseUtils.setUpdateTimestamp(supplies);
+        useCaseUtils.setUpdateTimestamp(supplies);
     }
 
     private void updateStockOrThrow(QuantityStock quantityStock) {

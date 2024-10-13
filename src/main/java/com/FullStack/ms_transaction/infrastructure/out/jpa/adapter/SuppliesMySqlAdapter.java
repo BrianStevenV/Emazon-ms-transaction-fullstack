@@ -7,6 +7,8 @@ import com.FullStack.ms_transaction.infrastructure.out.jpa.repository.ISuppliesR
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Date;
+
 @RequiredArgsConstructor
 public class SuppliesMySqlAdapter implements ISuppliesPersistencePort {
     private final ISuppliesRepository suppliesRepository;
@@ -22,5 +24,10 @@ public class SuppliesMySqlAdapter implements ISuppliesPersistencePort {
             return false;
         }
 
+    }
+
+    @Override
+    public Date findNextSupplyDateByProductId(long productId) {
+        return suppliesRepository.findNextSupplyDateByProductId(productId);
     }
 }

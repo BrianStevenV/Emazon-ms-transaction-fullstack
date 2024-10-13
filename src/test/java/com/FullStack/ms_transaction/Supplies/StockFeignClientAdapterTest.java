@@ -2,7 +2,7 @@ package com.FullStack.ms_transaction.Supplies;
 
 import com.FullStack.ms_transaction.application.dto.request.QuantityStockFeignClientDto;
 import com.FullStack.ms_transaction.domain.model.QuantityStock;
-import com.FullStack.ms_transaction.infrastructure.out.client.adapter.SuppliesFeignClientAdapter;
+import com.FullStack.ms_transaction.infrastructure.out.client.adapter.StockFeignClientAdapter;
 import com.FullStack.ms_transaction.infrastructure.out.client.feign.port.IStockFeignClientExternalPort;
 import com.FullStack.ms_transaction.infrastructure.out.client.mapper.feignclient.IStockFeignClientMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,19 +21,19 @@ import static org.mockito.Mockito.when;
 
 @TestPropertySource(locations = "classpath:application-dev.yml")
 @SpringBootTest
-public class SuppliesFeignClientAdapterTest {
+public class StockFeignClientAdapterTest {
     @Mock
     private IStockFeignClientExternalPort stockFeignClientPort;
 
     @Mock
     private IStockFeignClientMapper stockFeignClientMapper;
 
-    private SuppliesFeignClientAdapter suppliesFeignClientAdapter;
+    private StockFeignClientAdapter stockFeignClientAdapter;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        suppliesFeignClientAdapter = new SuppliesFeignClientAdapter(stockFeignClientPort, stockFeignClientMapper);
+        stockFeignClientAdapter = new StockFeignClientAdapter(stockFeignClientPort, stockFeignClientMapper);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class SuppliesFeignClientAdapterTest {
         when(stockFeignClientPort.updateStockQuantity(dto)).thenReturn(ResponseEntity.ok().build());
 
         // Act
-        boolean result = suppliesFeignClientAdapter.updateQuantity(quantityStock);
+        boolean result = stockFeignClientAdapter.updateQuantity(quantityStock);
 
         // Assert
         assertTrue(result);
@@ -62,7 +62,7 @@ public class SuppliesFeignClientAdapterTest {
         when(stockFeignClientPort.updateStockQuantity(dto)).thenReturn(ResponseEntity.badRequest().build());
 
         // Act
-        boolean result = suppliesFeignClientAdapter.updateQuantity(quantityStock);
+        boolean result = stockFeignClientAdapter.updateQuantity(quantityStock);
 
         // Assert
         assertFalse(result);
@@ -79,7 +79,7 @@ public class SuppliesFeignClientAdapterTest {
         when(stockFeignClientPort.cancelStockQuantity(dto)).thenReturn(ResponseEntity.ok().build());
 
         // Act
-        boolean result = suppliesFeignClientAdapter.cancelQuantity(quantityStock);
+        boolean result = stockFeignClientAdapter.cancelQuantity(quantityStock);
 
         // Assert
         assertTrue(result);
@@ -96,7 +96,7 @@ public class SuppliesFeignClientAdapterTest {
         when(stockFeignClientPort.cancelStockQuantity(dto)).thenReturn(ResponseEntity.badRequest().build());
 
         // Act
-        boolean result = suppliesFeignClientAdapter.cancelQuantity(quantityStock);
+        boolean result = stockFeignClientAdapter.cancelQuantity(quantityStock);
 
         // Assert
         assertFalse(result);
@@ -113,7 +113,7 @@ public class SuppliesFeignClientAdapterTest {
         when(stockFeignClientPort.updateStockQuantity(dto)).thenReturn(null);
 
         // Act & Assert
-        assertThrows(NullPointerException.class, () -> suppliesFeignClientAdapter.updateQuantity(quantityStock));
+        assertThrows(NullPointerException.class, () -> stockFeignClientAdapter.updateQuantity(quantityStock));
         verify(stockFeignClientMapper).toQuantityStockFeignClientDto(quantityStock);
         verify(stockFeignClientPort).updateStockQuantity(dto);
     }
@@ -127,7 +127,7 @@ public class SuppliesFeignClientAdapterTest {
         when(stockFeignClientPort.cancelStockQuantity(dto)).thenReturn(null);
 
         // Act & Assert
-        assertThrows(NullPointerException.class, () -> suppliesFeignClientAdapter.cancelQuantity(quantityStock));
+        assertThrows(NullPointerException.class, () -> stockFeignClientAdapter.cancelQuantity(quantityStock));
         verify(stockFeignClientMapper).toQuantityStockFeignClientDto(quantityStock);
         verify(stockFeignClientPort).cancelStockQuantity(dto);
     }

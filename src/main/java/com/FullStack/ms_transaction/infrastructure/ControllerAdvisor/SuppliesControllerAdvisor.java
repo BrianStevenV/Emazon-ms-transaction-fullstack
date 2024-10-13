@@ -2,6 +2,7 @@ package com.FullStack.ms_transaction.infrastructure.ControllerAdvisor;
 
 import com.FullStack.ms_transaction.domain.exception.AmountAvailableIsGreaterThanAmountTotalException;
 import com.FullStack.ms_transaction.domain.exception.FeignClientStockException;
+import com.FullStack.ms_transaction.domain.exception.ProductNotFoundException;
 import com.FullStack.ms_transaction.domain.exception.SaveSupplyException;
 import com.FullStack.ms_transaction.domain.exception.StatusIsNotApprovedException;
 import jakarta.validation.ConstraintViolationException;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 import static com.FullStack.ms_transaction.infrastructure.ControllerAdvisor.utils.ConstantsControllerAdvisor.AMOUNT_AVAILABLE_IS_GREATER_THAN_AMOUNT_TOTAL_EXCEPTION_MESSAGE;
 import static com.FullStack.ms_transaction.infrastructure.ControllerAdvisor.utils.ConstantsControllerAdvisor.FEIGN_CLIENT_STOCK_UPDATE_AMOUNT_MESSAGE_EXCEPTION;
+import static com.FullStack.ms_transaction.infrastructure.ControllerAdvisor.utils.ConstantsControllerAdvisor.PRODUCT_NOT_FOUND_EXCEPTION_MESSAGE;
 import static com.FullStack.ms_transaction.infrastructure.ControllerAdvisor.utils.ConstantsControllerAdvisor.RESPONSE_ERROR_MESSAGE;
 import static com.FullStack.ms_transaction.infrastructure.ControllerAdvisor.utils.ConstantsControllerAdvisor.SAVE_SUPPLY_EXCEPTION_MESSAGE;
 import static com.FullStack.ms_transaction.infrastructure.ControllerAdvisor.utils.ConstantsControllerAdvisor.STATUS_IS_NOT_APPROVED_EXCEPTION_MESSAGE;
@@ -78,5 +80,11 @@ public class SuppliesControllerAdvisor {
     public ResponseEntity<Map<String, String>> handleStatusIsNotApprovedException(StatusIsNotApprovedException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, STATUS_IS_NOT_APPROVED_EXCEPTION_MESSAGE));
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleProductNotFoundException(ProductNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Collections.singletonMap(RESPONSE_ERROR_MESSAGE, PRODUCT_NOT_FOUND_EXCEPTION_MESSAGE));
     }
 }

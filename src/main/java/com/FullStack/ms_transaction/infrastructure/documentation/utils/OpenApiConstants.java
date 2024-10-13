@@ -7,12 +7,18 @@ public class OpenApiConstants {
 
     public static final String CODE_201 = "201";
     public static final String CODE_409 = "409";
+    public static final String CODE_200 = "200";
+    public static final String CODE_404 = "404";
 
     // Supplies Rest Controller
 
     public static final String SUMMARY_CREATE_SUPPLIES = "Add a new Supplies";
     public static final String DESCRIPTION_CREATE_SUPPLIES_201 = "Supplies created";
     public static final String DESCRIPTION_CREATE_SUPPLIES_409 = "Supplies exists";
+
+    public static final String SUMMARY_NEXT_DATE_SUPPLY = "Next date supply";
+    public static final String DESCRIPTION_NEXT_DATE_SUPPLY_200 = "Next date supply successful";
+    public static final String DESCRIPTION_NEXT_DATE_SUPPLY_404 = "Next date supply failed";
 
     // Content
 
